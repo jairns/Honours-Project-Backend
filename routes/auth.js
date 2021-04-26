@@ -124,9 +124,9 @@ router.put("/forgot", async (req, res) => {
                     <p style="font-family: 'Roboto', sans-serif">
                         To reset your password follow the link below. The link is only active for 30 minutes. 
                     </p>
-                    <a href="http://localhost:3000/reset/${expiresIn}/${user.email}/${resetId}" 
+                    <a href="https://omnilingu.herokuapp.com/reset/${expiresIn}/${user.email}/${resetId}" 
                         style="font-family: 'Roboto', sans-serif; color: #1865f2">
-                            http://localhost:3000/reset/${expiresIn}/${user.email}/${resetId}
+                        https://omnilingu.herokuapp.com/reset/${expiresIn}/${user.email}/${resetId}
                     </a>` 
               }
               
