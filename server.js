@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const cors = require('cors')
+const cors = require('cors');
 require('dotenv/config');
 
 // Enabling cors
@@ -32,6 +32,8 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/decks', require('./routes/decks'));
 app.use('/api/cards', require('./routes/cards'));
 
+// Heroku and local port
 const PORT = process.env.PORT || 5000;
 
+// Start message
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

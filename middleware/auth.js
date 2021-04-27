@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv/config');
 
-// When creating a middleware function, always include next as it indicates are completing the function, move onto the next middleware
+// next is required to move onto next middleware
 module.exports = function(req, res, next) {
     // Get token from header
     const token = req.header('x-auth-token');

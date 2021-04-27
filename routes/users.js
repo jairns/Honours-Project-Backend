@@ -41,6 +41,7 @@ router.post('/', [
         // Returning error message
         return res.status(400).json({ errors: errors.array() });
     }
+    
     const { email, password } = req.body;
 
     try {
@@ -78,14 +79,13 @@ router.post('/', [
              if(err) throw err;
              // If error does not exist, return token
              res.json({ token });
-         })
+         });
     } catch (err) {
         // Console the error
         console.error(err.message);
         // Return error message
         res.status(500).send('Server Error');
     }
-
 });
 
 // Delete account
@@ -97,37 +97,28 @@ router.delete('/:id', auth, async (req, res) => {
         if(user._id.toString() !== req.user.id) {
             return res.status(401).json({ msg: 'Not authorised' });
         }
-
         // Deleting the user
         await User.findByIdAndRemove(req.params.id);
-
         // Storing the cards in variable
         let cards = await Card.find({ user: req.params.id });
-
         // Deleting the cards
         await Card.deleteMany({ user: req.params.id });
-
         // Removing the files from the cards within this deck
         for(i=0; i < cards.length; i++) {
                 fs.unlink(cards[i].file, err => {
                 console.log(err);
-            })
-            console.log(cards[i]);
+            });
         }
-
         // Storing the cards in variable
         let decks = await Deck.find({ user: req.params.id });
-
         // Deleting the cards
         await Deck.deleteMany({ user: req.params.id });
-
         //Removing the files from the cards within this deck
         for(i=0; i < decks.length; i++) {
             fs.unlink(decks[i].file, err => {
                 console.log(err);
-            })
+            });
         }
-   
         // Returning success message
         res.json({ msg: 'User was removed' });
     } catch (err) {

@@ -6,15 +6,18 @@ const { check, validationResult } = require('express-validator');
 const multer = require('multer');
 const fs = require('fs');
 const storage = multer.diskStorage({
+    // File location
     destination: function(req, file, cb) {
         cb(null, 'storage/decks/');
     },
+    // File name
     filename: function(req, file, cb) {
         cb(null, uuidv4() + file.originalname.toLowerCase());
     }
 });
 const upload = multer({
     storage: storage,
+    // File validation
     fileFilter: (req, file, cb) => {
         if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
           cb(null, true);
@@ -23,7 +26,7 @@ const upload = multer({
           return cb(new Error('Invalid file format. Only png, jpg, and jpeg are allowed.'));
         }
     }
-})
+});
 // Importing deck model
 const Deck = require('../models/Deck');
 const Card = require('../models/Card');
@@ -43,7 +46,7 @@ router.get('/', auth, async (req, res) => {
 // Get specific deck
 router.get('/:id', auth, async (req, res) => {
     try {
-        const decks = await Deck.find({ _id: req.params.id })
+        const decks = await Deck.find({ _id: req.params.id });
         res.json(decks);
     } catch (err) {
         console.error(err.message);
@@ -71,9 +74,7 @@ router.post('/', [auth, upload.single('file'), [
     const { title, description } = req.body;
 
     try {
-
         let newDeck;
-
         if(req.file) {
             // Creating a new instance of a deck
             newDeck = new Deck({
@@ -94,7 +95,6 @@ router.post('/', [auth, upload.single('file'), [
         const deck = await newDeck.save();
         // Returning the new deck
         res.json(deck);
-
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -166,26 +166,22 @@ router.delete('/:id', auth, async (req, res) => {
         await Deck.findByIdAndRemove(req.params.id);
         // Deleting the cards associated with this deck
         let cards = await Card.find({ deck: req.params.id });
-        
+        // Delete the cards
         await Card.deleteMany({deck: req.params.id});
-
         // Removing file from storage
         if(deck.file) {
             fs.unlink(filePath, err => {
                 console.log(err);
             })
         }
-
         // Removing the files from the cards within this deck
         for(i=0; i < cards.length; i++) {
             fs.unlink(cards[i].file, err => {
                 console.log(err);
             })
         }
-
         // Returning success message
         res.json({ msg: 'Deck was removed' });
-
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error');
@@ -209,12 +205,10 @@ router.put('/delete/thumbnail/:id', auth, async(req, res) => {
             // Set the fields equal to the new fields
             $unset: { file: 'null' }
         });
-
         // Removing file from storage
         fs.unlink(filePath, err => {
             console.log(err);
         })
-
         // Sending the updated deck
         res.json(deck);
     } catch (error) {

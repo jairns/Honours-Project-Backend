@@ -94,7 +94,7 @@ router.put("/forgot", async (req, res) => {
             // Generate reset token
             const resetId = uuidv4();
 
-            // Updating the contact
+            // Updating the password
             user = await User.findByIdAndUpdate(user._id, {
                 // Update fields 
                 passwordResetId: resetId,
@@ -164,7 +164,7 @@ router.put("/reset/password", async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             // Hashing the password
             user.password = await bcrypt.hash(password, salt);
-            // Updating the contact
+            // Updating the user
             user = await User.findByIdAndUpdate(user._id, {
                 // Update fields 
                 password: user.password

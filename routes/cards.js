@@ -158,7 +158,7 @@ router.get('/revise/:deck', auth, async (req, res) => {
             }
         }
         // Return card
-        res.json(card)
+        res.json(card);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
